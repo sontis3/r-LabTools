@@ -10,4 +10,11 @@ smplList <- fkList$GROUPDATA$GROUP$SAMPLELISTDATA
 # xmlChildren(smplList)
 
 occ <- sapply(xmlChildren(smplList), function(node) xmlValue(node[['SAMPLE']]))
-tasks <- getNodeSet(root, "/QUANDATASET/GROUPDATA/GROUP/SAMPLELISTDATA/SAMPLE[@type = 'Blank']/@task")
+
+# rawData <- getNodeSet(root, "/QUANDATASET/GROUPDATA/GROUP/SAMPLELISTDATA/SAMPLE[@type = 'Analyte']")
+
+fields <- c("@task", "@name", "@type", "COMPOUND[@id='1']/@stdconc", "COMPOUND[@id='1']/PEAK/@analconc")
+expQuery <- sprintf("/QUANDATASET/GROUPDATA/GROUP/SAMPLELISTDATA/SAMPLE[@type = 'Analyte']/%s", fields)
+rawData <- as.data.frame(xpathSApply(doc, expQuery))
+qqq <- xpathSApply(doc, expQuery)
+summary(qqq)
