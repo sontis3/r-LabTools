@@ -2,20 +2,37 @@ library("readxl", lib.loc="~/R/win-library/3.5")
 
 setwd("z:\\UBUNTU\\00 - Личные папки сотрудников\\08 - Овчаренко\\ACE")
 
+# searchIndexH2o <- function(name) {
+#   which(ace$Name==name & ace$Method == "H2O")
+# }
+
 searchIndexH2o <- function(name) {
-  which(ace$Name==name & ace$Method == "H2O")
+  which(ace$Name==name & ace$Method == "0")
 }
 
 ace <- read.csv("ACE.csv", header = T, sep = ",", check.names = F)
 
-apply(ace, 1, function(elt) {
+ace$relConc <- apply(ace, MARGIN = 1, function(elt) {
   # browser()
-  idx = searchIndexH2o(elt["Name"])
-  h2oConc = ace[idx,]$Conc
-  elt$corrConc = as.numeric(elt["Conc"]) / h2oConc
+  idx <- searchIndexH2o(elt["Name"])
+  h2oConc <- ace[idx,]$Conc
+  as.numeric(elt["Conc"]) / h2oConc
 })
 
-idx = searchIndexH2o("Гардения")
+ace40 <- ace[ace$Method == "40",]
+ace96 <- ace[ace$Method == "96",]
+
+plot(ace$Code, ace$relConc, type = "p")
+plot(ace40$Code, ace40$relConc)
+plot(ace96$Code, ace96$relConc)
+
+plot(ace$Method, ace$relConc)
+
+
+aceModel <- lm(ace$relConc ~ ace$Method, data = ace)
+summary(aceModel)
+abline(aceModel)
+
 
 ############################################
 pc <- read.csv("z:/UBUNTU/00 - Личные папки сотрудников/13 - Маркин/РПЖ/Сводные таблицы/r/PC Serum.csv", header = T, sep = ",", check.names = F)
