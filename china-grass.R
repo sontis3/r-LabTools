@@ -2,6 +2,63 @@ library("readxl", lib.loc="~/R/win-library/3.5")
 
 setwd("z:\\UBUNTU\\00 - Личные папки сотрудников\\08 - Овчаренко\\ACE")
 
+############################################################
+# формирование и вывод линий растворений
+ace_m <- read.csv("ACE_m.csv", header = T, sep = ",", check.names = F)
+
+ace_m$logConc0 <- apply(ace_m, MARGIN = 1, function(elt) {
+  log(as.numeric(elt["Conc0"]))
+})
+ace_m$logConc40 <- apply(ace_m, MARGIN = 1, function(elt) {
+  log(as.numeric(elt["Conc40"]))
+})
+ace_m$logConc96 <- apply(ace_m, MARGIN = 1, function(elt) {
+  log(as.numeric(elt["Conc96"]))
+})
+
+# вывод графиков растворение/величина
+lCoord <- apply(ace_m, MARGIN = 1, function(elt) {
+  list(x = c(0, 40, 96), y = c(elt["logConc0"], elt["logConc40"], elt["logConc96"]), Code = elt[["Code"]])
+})
+lColor = rainbow(20)
+# Add extra space to right of plot area; change clipping to figure
+par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
+
+plot(lCoord[[1]],
+     type = "b",
+     ylim = c(3, 9),
+     lwd = 2,
+     pch = 1,
+     col = lColor[1],
+     ylab = "ln(y)",
+     xlab = "Разведение")
+
+# Add legend to top right, outside plot region
+legend("topright", inset=c(-0.15,0), legend=ace_m$Code, pch=1:length(lCoord), col = lColor, title="Group")
+
+# legend("topleft",
+#        levels(ace_m$Code)
+# )
+lapply(lCoord[-1], function(elt) {
+  i <- which(LETTERS == elt[["Code"]])
+  lines(elt, type = "b", col = lColor[i+1], pch = i + 1, lwd = 2)
+})
+
+# вывод t-test в файл
+sink("t.test.txt")
+tt <- t.test(ace_m$logConc0, ace_m$logConc40, paired = T)
+t.test(ace_m$logConc0, ace_m$logConc96, paired = T)
+t.test(ace_m$logConc40, ace_m$logConc96, paired = T)
+sink()
+
+#########################################################
+
+
+
+
+
+
+
 searchIndexH2o_2 <- function(name) {
   which(ace$Name==name & ace$Method == "H2O")
 }
@@ -12,33 +69,40 @@ searchIndexH2o <- function(name) {
 }
 
 ace <- read.csv("ACE.csv", header = T, sep = ",", check.names = F)
-ace2 <- read.csv("ACE_src_2.csv", header = T, sep = ",", check.names = F)
 
-ace$relConc <- apply(ace, MARGIN = 1, function(elt) {
+# ace$relConc <- apply(ace, MARGIN = 1, function(elt) {
+#   # browser()
+#   idx <- searchIndexH2o(elt["Name"])
+#   h2oConc <- ace[idx,]$Conc
+#   as.numeric(elt["Conc"]) / h2oConc
+# })
+# 
+# ace0 <- ace[ace$Method == "0",]
+# ace40 <- ace[ace$Method == "40",]
+# ace96 <- ace[ace$Method == "96",]
+# 
+# plot(ace$Code, ace$relConc, type = "p")
+# plot(ace40$Code, ace40$relConc)
+# plot(ace96$Code, ace96$relConc)
+# 
+# plot(ace$Method, ace$relConc)
+
+# aceModel <- lm(ace$relConc ~ ace$Method, data = ace)
+# summary(aceModel)
+# abline(aceModel)
+
+ace$logConc <- apply(ace, MARGIN = 1, function(elt) {
   # browser()
-  idx <- searchIndexH2o(elt["Name"])
-  h2oConc <- ace[idx,]$Conc
-  as.numeric(elt["Conc"]) / h2oConc
+  log(as.numeric(elt["Conc"]))
 })
 
 ace0 <- ace[ace$Method == "0",]
 ace40 <- ace[ace$Method == "40",]
 ace96 <- ace[ace$Method == "96",]
 
-plot(ace$Code, ace$relConc, type = "p")
-plot(ace40$Code, ace40$relConc)
-plot(ace96$Code, ace96$relConc)
-
-plot(ace$Method, ace$relConc)
-
-##################
-ace$logConc <- apply(ace, MARGIN = 1, function(elt) {
-  # browser()
-  log10(as.numeric(elt["Conc"]))
-})
 plot(ace$Code, ace$logConc, type = "p")
 plot(ace0$Code, ace0$logConc)
-plot(ace$Method, ace$Conc)
+plot(ace$Method, ace$logConc)
 #####################
 
 ######################     t-test
@@ -46,6 +110,7 @@ t.test(ace0$Conc, ace40$Conc)
 t.test(ace40$Conc, ace96$Conc)
 #####################
 
+ace2 <- read.csv("ACE_src_2.csv", header = T, sep = ",", check.names = F)
 ace2$logConc <- apply(ace2, MARGIN = 1, function(elt) {
   # browser()
   log10(as.numeric(elt["Conc"]))
@@ -62,14 +127,7 @@ t.test(ace0_2$Conc, ace40_2$Conc)
 t.test(ace40_2$Conc, ace96_2$Conc)
 
 
-
-aceModel123 <- lm(ace2$Conc ~ ace0_2$Method + ace40_2$Method + ace96_2$Method, data = ace2)
-
-aceModel <- lm(ace$relConc ~ ace$Method, data = ace)
-summary(aceModel)
-abline(aceModel)
-
-
+#####################
 ############################################
 pc <- read.csv("z:/UBUNTU/00 - Личные папки сотрудников/13 - Маркин/РПЖ/Сводные таблицы/r/PC Serum.csv", header = T, sep = ",", check.names = F)
 ph <- read.csv("z:/UBUNTU/00 - Личные папки сотрудников/13 - Маркин/РПЖ/Сводные таблицы/r/PH Serum.csv", header = T, sep = ",", check.names = F)
