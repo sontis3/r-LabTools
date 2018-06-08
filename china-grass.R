@@ -34,7 +34,7 @@ plot(lCoord[[1]],
      xlab = "Разведение")
 
 # Add legend to top right, outside plot region
-legend("topright", inset=c(-0.15,0), legend=ace_m$Code, pch=1:length(lCoord), col = lColor, title="Group")
+legend("topright", inset=c(-0.2,0), legend=ace_m$Code, pch=1:length(lCoord), col = lColor, title="Group")
 
 # legend("topleft",
 #        levels(ace_m$Code)
@@ -43,6 +43,21 @@ lapply(lCoord[-1], function(elt) {
   i <- which(LETTERS == elt[["Code"]])
   lines(elt, type = "b", col = lColor[i+1], pch = i + 1, lwd = 2)
 })
+
+meanCoord <- list(x = c(0, 40, 96), y = c(mean(ace_m$logConc0), mean(ace_m$logConc40), mean(ace_m$logConc96)))
+minCoord <- list(x = c(0, 40, 96), y = c(min(ace_m$logConc0), min(ace_m$logConc40), min(ace_m$logConc96)))
+maxCoord <- list(x = c(0, 40, 96), y = c(max(ace_m$logConc0), max(ace_m$logConc40), max(ace_m$logConc96)))
+plot(meanCoord,
+     type = "b",
+     ylim = c(3, 9),
+     lwd = 2,
+     pch = 1,
+     ylab = "mean ln(y)",
+     xlab = "Разведение")
+lines(minCoord, type = "b", pch = 2, lwd = 2)
+lines(maxCoord, type = "b", pch = 3, lwd = 2)
+legend("topright", inset=c(-0.2,0), legend=c("mean", "min", "max"), pch=1:3, title="Group")
+
 
 # вывод t-test в файл
 sink("t.test.txt")
@@ -103,6 +118,12 @@ ace96 <- ace[ace$Method == "96",]
 plot(ace$Code, ace$logConc, type = "p")
 plot(ace0$Code, ace0$logConc)
 plot(ace$Method, ace$logConc)
+# Создание столбчатой диаграммы
+barplot(ace0$logConc, names.arg = ace0$Code, xlab = "Код", ylab = "ln(Концентрация) мг/г", space = 0.3)
+barplot(ace0$Conc)
+
+require(ggplot2)
+qplot(ace$Code, ace$logConc)
 #####################
 
 ######################     t-test
