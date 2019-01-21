@@ -4,7 +4,7 @@ setwd("z:\\UBUNTU\\00 - Личные папки сотрудников\\08 - О�
 
 ############################################################
 # формирование и вывод линий растворений
-ace_m <- read.csv("ACE_m.csv", header = T, sep = ",", check.names = F)
+ace_m <- read.csv("ACE_m3.csv", header = T, sep = ",", check.names = F)
 
 ace_m$logConc0 <- apply(ace_m, MARGIN = 1, function(elt) {
   log(as.numeric(elt["Conc0"]))
@@ -57,6 +57,12 @@ plot(meanCoord,
 lines(minCoord, type = "b", pch = 2, lwd = 2)
 lines(maxCoord, type = "b", pch = 3, lwd = 2)
 legend("topright", inset=c(-0.2,0), legend=c("mean", "min", "max"), pch=1:3, title="Group")
+
+
+# Создание столбчатой диаграммы
+barplot(ace_m$Conc0, names.arg = ace_m$Code, xlab = "Код", ylab = "Концентрация мг/г", space = 0.3, ylim = c(0, 60.0))
+barplot(ace_m$Conc40, names.arg = ace_m$Code, xlab = "Код", ylab = "Концентрация мг/г", space = 0.3, ylim = c(0, 60.0))
+barplot(ace_m$Conc96, names.arg = ace_m$Code, xlab = "Код", ylab = "Концентрация мг/г", space = 0.3, ylim = c(0, 60.0))
 
 
 # вывод t-test в файл
@@ -131,7 +137,8 @@ t.test(ace0$Conc, ace40$Conc)
 t.test(ace40$Conc, ace96$Conc)
 #####################
 
-ace2 <- read.csv("ACE_src_2.csv", header = T, sep = ",", check.names = F)
+# сделано 18.07.18
+ace2 <- read.csv("ACE_src_3.csv", header = T, sep = ",", check.names = F)
 ace2$logConc <- apply(ace2, MARGIN = 1, function(elt) {
   # browser()
   log10(as.numeric(elt["Conc"]))
@@ -146,7 +153,14 @@ ace96_2 <- ace2[ace2$Method == "96%",]
 
 t.test(ace0_2$Conc, ace40_2$Conc)
 t.test(ace40_2$Conc, ace96_2$Conc)
+t.test(ace0_2$Conc, ace96_2$Conc)
 
+# вывод t-test в файл
+sink("t.test3.txt")
+t.test(ace0_2$Conc, ace40_2$Conc)
+t.test(ace40_2$Conc, ace96_2$Conc)
+t.test(ace0_2$Conc, ace96_2$Conc)
+sink()
 
 #####################
 ############################################
