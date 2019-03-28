@@ -48,4 +48,9 @@ mean_G1F <- mean(Tmab_010518OP_G1F[['Observed mass (Da)']])
 mean_G1FG2F <- mean(Tmab_010518OP_G1FG2F[['Observed mass (Da)']])
 mean_G2F <- mean(Tmab_010518OP_G2F[['Observed mass (Da)']])
 
+sd_G0F <- sd(Tmab_010518OP_G0F[['Mass error (mDa)']] / 1000)
+sd_G0FG1F <- sd(Tmab_010518OP_G0FG1F[['Mass error (mDa)']] / 1000)
+sd_G1F <- sd(Tmab_010518OP_G1F[['Mass error (mDa)']] / 1000)
+sd_G1FG2F <- sd(Tmab_010518OP_G1FG2F[['Mass error (mDa)']] / 1000)
+sd_G2F <- sd(Tmab_010518OP_G2F[['Mass error (mDa)']] / 1000)
 
