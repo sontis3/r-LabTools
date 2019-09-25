@@ -54,3 +54,17 @@ sd_G1F <- sd(Tmab_010518OP_G1F[['Mass error (mDa)']] / 1000)
 sd_G1FG2F <- sd(Tmab_010518OP_G1FG2F[['Mass error (mDa)']] / 1000)
 sd_G2F <- sd(Tmab_010518OP_G2F[['Mass error (mDa)']] / 1000)
 
+
+# https://r-analytics.blogspot.com/2012/05/blog-post_20.html#.XLB3CegzaCg
+# https://www.researchgate.net/post/can_we_apply_t-test_with_small_sample_sizes_the_randomization_condition_is_exist
+# https://www.researchgate.net/post/Which_normality_test_is_preferable_for_small_data_sets_10_observations
+gogoR <- c(33.5, 22.4, 28.3)
+gogoT <- c(27.6, 26.3, 29.0)
+wilcox.test(gogoR, gogoT)
+
+
+gogiR <- c(30.1, 29.1, 30.0)
+gogiT <- c(25.8, 25.6, 25.7)
+wilcox.test(gogiR, gogiT, paired = F)
+
+
